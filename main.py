@@ -40,7 +40,7 @@ def ask_gpt(question, context_data):
             {"role": "system", "content": "You are a helpful crypto trading assistant."},
             {"role": "user", "content": f"My trade data:\n{context_data}\n\nQuestion:\n{question}"}
         ]
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-4",
             messages=messages,
             temperature=0.3
