@@ -5,9 +5,11 @@ import pandas as pd
 from dotenv import load_dotenv
 import os
 
-# Load secrets from .env or Render's environment
+# Load environment variables
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+
+# OpenAI client (new SDK format)
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 KUCOIN_API_KEY = os.getenv("KUCOIN_API_KEY")
 KUCOIN_API_SECRET = os.getenv("KUCOIN_API_SECRET")
@@ -33,7 +35,7 @@ def fetch_open_positions(exchange):
     except Exception as e:
         return pd.DataFrame([{"error": str(e)}])
 
-# Generate GPT response about your trades
+# Chat with GPT about your trades
 def ask_gpt(question, context_data):
     try:
         messages = [
@@ -49,7 +51,7 @@ def ask_gpt(question, context_data):
     except Exception as e:
         return f"Error talking to GPT: {e}"
 
-# UI
+# Streamlit UI
 st.set_page_config(page_title="KuCoin Futures Dashboard", layout="wide")
 st.title("📊 KuCoin Futures Dashboard + ChatGPT Assistant")
 
@@ -62,7 +64,7 @@ with st.spinner("Connecting to KuCoin..."):
 st.subheader("🔓 Open Positions")
 st.dataframe(positions_df)
 
-# Chat with GPT about your trades
+# Ask GPT section
 st.subheader("🤖 Ask ChatGPT About Your Trades")
 user_question = st.text_input("Ask a question about your trades:")
 if st.button("Ask") and user_question:
